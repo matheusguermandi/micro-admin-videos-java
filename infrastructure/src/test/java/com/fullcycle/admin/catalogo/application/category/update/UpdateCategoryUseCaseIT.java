@@ -4,6 +4,7 @@ import com.fullcycle.admin.catalogo.IntegrationTest;
 import com.fullcycle.admin.catalogo.domain.category.Category;
 import com.fullcycle.admin.catalogo.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalogo.domain.exceptions.DomainException;
+import com.fullcycle.admin.catalogo.domain.exceptions.NotFoundException;
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryJpaEntity;
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
@@ -32,7 +33,8 @@ public class UpdateCategoryUseCaseIT {
 
     @Test
     public void givenAValidCommand_whenCallsUpdateCategory_shouldReturnCategoryId() {
-        final var aCategory = Category.newCategory("Film", null, true);
+        final var aCategory =
+                Category.newCategory("Film", null, true);
 
         save(aCategory);
 
@@ -41,7 +43,12 @@ public class UpdateCategoryUseCaseIT {
         final var expectedIsActive = true;
         final var expectedId = aCategory.getId();
 
-        final var aCommand = UpdateCategoryCommand.with(expectedId.getValue(), expectedName, expectedDescription, expectedIsActive);
+        final var aCommand = UpdateCategoryCommand.with(
+                expectedId.getValue(),
+                expectedName,
+                expectedDescription,
+                expectedIsActive
+        );
 
         Assertions.assertEquals(1, categoryRepository.count());
 
@@ -50,7 +57,8 @@ public class UpdateCategoryUseCaseIT {
         Assertions.assertNotNull(actualOutput);
         Assertions.assertNotNull(actualOutput.id());
 
-        final var actualCategory = categoryRepository.findById(expectedId.getValue()).get();
+        final var actualCategory =
+                categoryRepository.findById(expectedId.getValue()).get();
 
         Assertions.assertEquals(expectedName, actualCategory.getName());
         Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
@@ -62,7 +70,8 @@ public class UpdateCategoryUseCaseIT {
 
     @Test
     public void givenAInvalidName_whenCallsUpdateCategory_thenShouldReturnDomainException() {
-        final var aCategory = Category.newCategory("Film", null, true);
+        final var aCategory =
+                Category.newCategory("Film", null, true);
 
         save(aCategory);
 
@@ -74,7 +83,8 @@ public class UpdateCategoryUseCaseIT {
         final var expectedErrorMessage = "'name' should not be null";
         final var expectedErrorCount = 1;
 
-        final var aCommand = UpdateCategoryCommand.with(expectedId.getValue(), expectedName, expectedDescription, expectedIsActive);
+        final var aCommand =
+                UpdateCategoryCommand.with(expectedId.getValue(), expectedName, expectedDescription, expectedIsActive);
 
         final var notification = useCase.execute(aCommand).getLeft();
 
@@ -86,7 +96,8 @@ public class UpdateCategoryUseCaseIT {
 
     @Test
     public void givenAValidInactivateCommand_whenCallsUpdateCategory_shouldReturnInactiveCategoryId() {
-        final var aCategory = Category.newCategory("Film", null, true);
+        final var aCategory =
+                Category.newCategory("Film", null, true);
 
         save(aCategory);
 
@@ -95,7 +106,12 @@ public class UpdateCategoryUseCaseIT {
         final var expectedIsActive = false;
         final var expectedId = aCategory.getId();
 
-        final var aCommand = UpdateCategoryCommand.with(expectedId.getValue(), expectedName, expectedDescription, expectedIsActive);
+        final var aCommand = UpdateCategoryCommand.with(
+                expectedId.getValue(),
+                expectedName,
+                expectedDescription,
+                expectedIsActive
+        );
 
         Assertions.assertTrue(aCategory.isActive());
         Assertions.assertNull(aCategory.getDeletedAt());
@@ -105,7 +121,8 @@ public class UpdateCategoryUseCaseIT {
         Assertions.assertNotNull(actualOutput);
         Assertions.assertNotNull(actualOutput.id());
 
-        final var actualCategory = categoryRepository.findById(expectedId.getValue()).get();
+        final var actualCategory =
+                categoryRepository.findById(expectedId.getValue()).get();
 
         Assertions.assertEquals(expectedName, actualCategory.getName());
         Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
@@ -117,7 +134,8 @@ public class UpdateCategoryUseCaseIT {
 
     @Test
     public void givenAValidCommand_whenGatewayThrowsRandomException_shouldReturnAException() {
-        final var aCategory = Category.newCategory("Film", null, true);
+        final var aCategory =
+                Category.newCategory("Film", null, true);
 
         save(aCategory);
 
@@ -128,16 +146,23 @@ public class UpdateCategoryUseCaseIT {
         final var expectedErrorCount = 1;
         final var expectedErrorMessage = "Gateway error";
 
-        final var aCommand = UpdateCategoryCommand.with(expectedId.getValue(), expectedName, expectedDescription, expectedIsActive);
+        final var aCommand = UpdateCategoryCommand.with(
+                expectedId.getValue(),
+                expectedName,
+                expectedDescription,
+                expectedIsActive
+        );
 
-        doThrow(new IllegalStateException(expectedErrorMessage)).when(categoryGateway).update(any());
+        doThrow(new IllegalStateException(expectedErrorMessage))
+                .when(categoryGateway).update(any());
 
         final var notification = useCase.execute(aCommand).getLeft();
 
         Assertions.assertEquals(expectedErrorCount, notification.getErrors().size());
         Assertions.assertEquals(expectedErrorMessage, notification.firstError().message());
 
-        final var actualCategory = categoryRepository.findById(expectedId.getValue()).get();
+        final var actualCategory =
+                categoryRepository.findById(expectedId.getValue()).get();
 
         Assertions.assertEquals(aCategory.getName(), actualCategory.getName());
         Assertions.assertEquals(aCategory.getDescription(), actualCategory.getDescription());
@@ -156,15 +181,24 @@ public class UpdateCategoryUseCaseIT {
         final var expectedErrorCount = 1;
         final var expectedErrorMessage = "Category with ID 123 was not found";
 
-        final var aCommand = UpdateCategoryCommand.with(expectedId, expectedName, expectedDescription, expectedIsActive);
+        final var aCommand = UpdateCategoryCommand.with(
+                expectedId,
+                expectedName,
+                expectedDescription,
+                expectedIsActive
+        );
 
-        final var actualException = Assertions.assertThrows(DomainException.class, () -> useCase.execute(aCommand));
+        final var actualException =
+                Assertions.assertThrows(NotFoundException.class, () -> useCase.execute(aCommand));
 
-        Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
-        Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
+        Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
     }
 
     private void save(final Category... aCategory) {
-        categoryRepository.saveAllAndFlush(Arrays.stream(aCategory).map(CategoryJpaEntity::from).toList());
+        categoryRepository.saveAllAndFlush(
+                Arrays.stream(aCategory)
+                        .map(CategoryJpaEntity::from)
+                        .toList()
+        );
     }
 }
