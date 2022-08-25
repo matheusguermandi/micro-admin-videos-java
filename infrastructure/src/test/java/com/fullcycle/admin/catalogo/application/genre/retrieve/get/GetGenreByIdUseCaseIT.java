@@ -1,4 +1,4 @@
-package com.fullcycle.admin.catalogo.application.genre.retrieve;
+package com.fullcycle.admin.catalogo.application.genre.retrieve.get;
 
 import com.fullcycle.admin.catalogo.IntegrationTest;
 import com.fullcycle.admin.catalogo.application.genre.retrieve.get.GetGenreByIdUseCase;
