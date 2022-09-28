@@ -156,4 +156,26 @@ public class CastMemberAPITest {
         verify(getCastMemberByIdUseCase).execute(eq(expectedId));
     }
 
+    @Test
+    public void givenAInvalidId_whenCallsGetByIdAndCastMemberDoesntExists_shouldReturnNotFound() throws Exception {
+        // given
+        final var expectedErrorMessage = "CastMember with ID 123 was not found";
+        final var expectedId = CastMemberID.from("123");
+
+        when(getCastMemberByIdUseCase.execute(any()))
+                .thenThrow(NotFoundException.with(CastMember.class, expectedId));
+
+        // when
+        final var aRequest = get("/cast_members/{id}", expectedId)
+                .accept(MediaType.APPLICATION_JSON);
+
+        final var response = this.mvc.perform(aRequest);
+
+        // then
+        response.andExpect(status().isNotFound())
+                .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
+
+        verify(getCastMemberByIdUseCase).execute(eq(expectedId.getValue()));
+    }
 }
