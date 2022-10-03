@@ -71,8 +71,7 @@ public interface CategoryAPI {
     ResponseEntity<?> updateById(@PathVariable(name = "id") String id, @RequestBody UpdateCategoryRequest input);
 
     @DeleteMapping(
-            value = "{id}",
-            produces = MediaType.APPLICATION_JSON_VALUE
+            value = "{id}"
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete a category by it's identifier")
