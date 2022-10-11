@@ -121,4 +121,23 @@ public class CastMemberE2ETest implements MockDsl {
                 .andExpect(jsonPath("$.total", equalTo(3)))
                 .andExpect(jsonPath("$.items", hasSize(0)));
     }
+
+    @Test
+    public void asACatalogAdminIShouldBeAbleToSearchThruAllMembers() throws Exception {
+        Assertions.assertTrue(MYSQL_CONTAINER.isRunning());
+        Assertions.assertEquals(0, castMemberRepository.count());
+
+        givenACastMember("Vin Diesel", CastMemberType.ACTOR);
+        givenACastMember("Quentin Tarantino", CastMemberType.DIRECTOR);
+        givenACastMember("Jason Momoa", CastMemberType.ACTOR);
+
+        listCastMembers(0, 1, "vin")
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", equalTo(0)))
+                .andExpect(jsonPath("$.per_page", equalTo(1)))
+                .andExpect(jsonPath("$.total", equalTo(1)))
+                .andExpect(jsonPath("$.items", hasSize(1)))
+                .andExpect(jsonPath("$.items[0].name", equalTo("Vin Diesel")));
+    }
+
 }
