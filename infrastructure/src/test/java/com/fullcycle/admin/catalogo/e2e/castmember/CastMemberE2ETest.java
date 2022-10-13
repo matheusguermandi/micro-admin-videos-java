@@ -181,4 +181,17 @@ public class CastMemberE2ETest implements MockDsl {
         Assertions.assertNotNull(actualMember.updatedAt());
         Assertions.assertEquals(actualMember.createdAt(), actualMember.updatedAt());
     }
+
+    @Test
+    public void asACatalogAdminIShouldBeAbleToSeeATreatedErrorByGettingANotFoundCastMember() throws Exception {
+        Assertions.assertTrue(MYSQL_CONTAINER.isRunning());
+        Assertions.assertEquals(0, castMemberRepository.count());
+
+        givenACastMember(Fixture.name(), Fixture.CastMember.type());
+        givenACastMember(Fixture.name(), Fixture.CastMember.type());
+
+        retrieveACastMemberResult(CastMemberID.from("123"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", equalTo("CastMember with ID 123 was not found")));
+    }
 }
