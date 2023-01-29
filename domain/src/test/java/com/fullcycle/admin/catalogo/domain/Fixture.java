@@ -1,4 +1,4 @@
-package com.fullcycle.admin.catalogo.application;
+package com.fullcycle.admin.catalogo.domain;
 
 import com.fullcycle.admin.catalogo.domain.castmember.CastMember;
 import com.fullcycle.admin.catalogo.domain.castmember.CastMemberType;
@@ -123,9 +123,9 @@ public final class Fixture {
         }
 
         public static Resource resource(final Resource.Type type) {
-            final String contentType = Match(type).of(
-                    Case($(List(Resource.Type.VIDEO, Resource.Type.TRAILER)::contains), "video/mp4"),
-                    Case($(), "image/jpg")
+            final String contentType = API.Match(type).of(
+                    API.Case(API.$(API.List(Resource.Type.VIDEO, Resource.Type.TRAILER)::contains), "video/mp4"),
+                    API.Case(API.$(), "image/jpg")
             );
 
             final byte[] content = "Conteudo".getBytes();
