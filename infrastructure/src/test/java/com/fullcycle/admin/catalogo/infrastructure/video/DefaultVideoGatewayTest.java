@@ -11,6 +11,7 @@ import com.fullcycle.admin.catalogo.domain.genre.GenreID;
 import com.fullcycle.admin.catalogo.domain.video.AudioVideoMedia;
 import com.fullcycle.admin.catalogo.domain.video.ImageMedia;
 import com.fullcycle.admin.catalogo.domain.video.Video;
+import com.fullcycle.admin.catalogo.domain.video.VideoID;
 import com.fullcycle.admin.catalogo.infrastructure.video.persistence.VideoRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -66,17 +67,38 @@ public class DefaultVideoGatewayTest {
         final var expectedGenres = Set.of(tech.getId());
         final var expectedMembers = Set.of(wesley.getId());
 
-        final AudioVideoMedia expectedVideo = AudioVideoMedia.with("123", "video", "/media/video");
+        final AudioVideoMedia expectedVideo =
+                AudioVideoMedia.with("123", "video", "/media/video");
 
-        final AudioVideoMedia expectedTrailer = AudioVideoMedia.with("123", "trailer", "/media/trailer");
+        final AudioVideoMedia expectedTrailer =
+                AudioVideoMedia.with("123", "trailer", "/media/trailer");
 
-        final ImageMedia expectedBanner = ImageMedia.with("123", "banner", "/media/banner");
+        final ImageMedia expectedBanner =
+                ImageMedia.with("123", "banner", "/media/banner");
 
-        final ImageMedia expectedThumb = ImageMedia.with("123", "thumb", "/media/thumb");
+        final ImageMedia expectedThumb =
+                ImageMedia.with("123", "thumb", "/media/thumb");
 
-        final ImageMedia expectedThumbHalf = ImageMedia.with("123", "thumbHalf", "/media/thumbHalf");
+        final ImageMedia expectedThumbHalf =
+                ImageMedia.with("123", "thumbHalf", "/media/thumbHalf");
 
-        final var aVideo = Video.newVideo(expectedTitle, expectedDescription, expectedLaunchYear, expectedDuration, expectedOpened, expectedPublished, expectedRating, expectedCategories, expectedGenres, expectedMembers).setVideo(expectedVideo).setTrailer(expectedTrailer).setBanner(expectedBanner).setThumbnail(expectedThumb).setThumbnailHalf(expectedThumbHalf);
+        final var aVideo = Video.newVideo(
+                        expectedTitle,
+                        expectedDescription,
+                        expectedLaunchYear,
+                        expectedDuration,
+                        expectedOpened,
+                        expectedPublished,
+                        expectedRating,
+                        expectedCategories,
+                        expectedGenres,
+                        expectedMembers
+                )
+                .setVideo(expectedVideo)
+                .setTrailer(expectedTrailer)
+                .setBanner(expectedBanner)
+                .setThumbnail(expectedThumb)
+                .setThumbnailHalf(expectedThumbHalf);
 
         // when
         final var actualVideo = videoGateway.create(aVideo);
@@ -135,7 +157,18 @@ public class DefaultVideoGatewayTest {
         final var expectedGenres = Set.<GenreID>of();
         final var expectedMembers = Set.<CastMemberID>of();
 
-        final var aVideo = Video.newVideo(expectedTitle, expectedDescription, expectedLaunchYear, expectedDuration, expectedOpened, expectedPublished, expectedRating, expectedCategories, expectedGenres, expectedMembers);
+        final var aVideo = Video.newVideo(
+                expectedTitle,
+                expectedDescription,
+                expectedLaunchYear,
+                expectedDuration,
+                expectedOpened,
+                expectedPublished,
+                expectedRating,
+                expectedCategories,
+                expectedGenres,
+                expectedMembers
+        );
 
         // when
         final var actualVideo = videoGateway.create(aVideo);
@@ -183,7 +216,18 @@ public class DefaultVideoGatewayTest {
     @Transactional
     public void givenAValidVideo_whenCallsUpdate_shouldPersistIt() {
         // given
-        final var aVideo = videoGateway.create(Video.newVideo(Fixture.title(), Fixture.Videos.description(), Year.of(Fixture.year()), Fixture.duration(), Fixture.bool(), Fixture.bool(), Fixture.Videos.rating(), Set.of(), Set.of(), Set.of()));
+        final var aVideo = videoGateway.create(Video.newVideo(
+                Fixture.title(),
+                Fixture.Videos.description(),
+                Year.of(Fixture.year()),
+                Fixture.duration(),
+                Fixture.bool(),
+                Fixture.bool(),
+                Fixture.Videos.rating(),
+                Set.of(),
+                Set.of(),
+                Set.of()
+        ));
 
         final var wesley = castMemberGateway.create(Fixture.CastMembers.wesley());
         final var aulas = categoryGateway.create(Fixture.Categories.aulas());
@@ -200,17 +244,39 @@ public class DefaultVideoGatewayTest {
         final var expectedGenres = Set.of(tech.getId());
         final var expectedMembers = Set.of(wesley.getId());
 
-        final AudioVideoMedia expectedVideo = AudioVideoMedia.with("123", "video", "/media/video");
+        final AudioVideoMedia expectedVideo =
+                AudioVideoMedia.with("123", "video", "/media/video");
 
-        final AudioVideoMedia expectedTrailer = AudioVideoMedia.with("123", "trailer", "/media/trailer");
+        final AudioVideoMedia expectedTrailer =
+                AudioVideoMedia.with("123", "trailer", "/media/trailer");
 
-        final ImageMedia expectedBanner = ImageMedia.with("123", "banner", "/media/banner");
+        final ImageMedia expectedBanner =
+                ImageMedia.with("123", "banner", "/media/banner");
 
-        final ImageMedia expectedThumb = ImageMedia.with("123", "thumb", "/media/thumb");
+        final ImageMedia expectedThumb =
+                ImageMedia.with("123", "thumb", "/media/thumb");
 
-        final ImageMedia expectedThumbHalf = ImageMedia.with("123", "thumbHalf", "/media/thumbHalf");
+        final ImageMedia expectedThumbHalf =
+                ImageMedia.with("123", "thumbHalf", "/media/thumbHalf");
 
-        final var updatedVideo = Video.with(aVideo).update(expectedTitle, expectedDescription, expectedLaunchYear, expectedDuration, expectedOpened, expectedPublished, expectedRating, expectedCategories, expectedGenres, expectedMembers).setVideo(expectedVideo).setTrailer(expectedTrailer).setBanner(expectedBanner).setThumbnail(expectedThumb).setThumbnailHalf(expectedThumbHalf);
+        final var updatedVideo = Video.with(aVideo)
+                .update(
+                        expectedTitle,
+                        expectedDescription,
+                        expectedLaunchYear,
+                        expectedDuration,
+                        expectedOpened,
+                        expectedPublished,
+                        expectedRating,
+                        expectedCategories,
+                        expectedGenres,
+                        expectedMembers
+                )
+                .setVideo(expectedVideo)
+                .setTrailer(expectedTrailer)
+                .setBanner(expectedBanner)
+                .setThumbnail(expectedThumb)
+                .setThumbnailHalf(expectedThumbHalf);
 
         // when
         final var actualVideo = videoGateway.update(updatedVideo);
@@ -256,5 +322,59 @@ public class DefaultVideoGatewayTest {
         Assertions.assertEquals(expectedThumbHalf.name(), persistedVideo.getThumbnailHalf().getName());
         Assertions.assertNotNull(persistedVideo.getCreatedAt());
         Assertions.assertTrue(persistedVideo.getUpdatedAt().isAfter(aVideo.getUpdatedAt()));
+    }
+
+    @Test
+    public void givenAValidVideoId_whenCallsDeleteById_shouldDeleteIt() {
+        // given
+        final var aVideo = videoGateway.create(Video.newVideo(
+                Fixture.title(),
+                Fixture.Videos.description(),
+                Year.of(Fixture.year()),
+                Fixture.duration(),
+                Fixture.bool(),
+                Fixture.bool(),
+                Fixture.Videos.rating(),
+                Set.of(),
+                Set.of(),
+                Set.of()
+        ));
+
+        Assertions.assertEquals(1, videoRepository.count());
+
+        final var anId = aVideo.getId();
+
+        // when
+        videoGateway.deleteById(anId);
+
+        // then
+        Assertions.assertEquals(0, videoRepository.count());
+    }
+
+    @Test
+    public void givenAnInvalidVideoId_whenCallsDeleteById_shouldDeleteIt() {
+        // given
+        videoGateway.create(Video.newVideo(
+                Fixture.title(),
+                Fixture.Videos.description(),
+                Year.of(Fixture.year()),
+                Fixture.duration(),
+                Fixture.bool(),
+                Fixture.bool(),
+                Fixture.Videos.rating(),
+                Set.of(),
+                Set.of(),
+                Set.of()
+        ));
+
+        Assertions.assertEquals(1, videoRepository.count());
+
+        final var anId = VideoID.unique();
+
+        // when
+        videoGateway.deleteById(anId);
+
+        // then
+        Assertions.assertEquals(1, videoRepository.count());
     }
 }
