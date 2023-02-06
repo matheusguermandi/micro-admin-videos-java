@@ -63,8 +63,15 @@ public final class Fixture {
         private static final Category AULAS =
                 Category.newCategory("Aulas", "Some description", true);
 
+        private static final Category LIVES =
+                Category.newCategory("Lives", "Some description", true);
+
         public static Category aulas() {
             return AULAS.clone();
+        }
+
+        public static Category lives() {
+            return LIVES.clone();
         }
     }
 
@@ -94,8 +101,15 @@ public final class Fixture {
         private static final Genre TECH =
                 Genre.newGenre("Technology", true);
 
+        private static final Genre BUSINESS =
+                Genre.newGenre("Business", true);
+
         public static Genre tech() {
             return Genre.with(TECH);
+        }
+
+        public static Genre business() {
+            return Genre.with(BUSINESS);
         }
     }
 
@@ -123,9 +137,9 @@ public final class Fixture {
         }
 
         public static Resource resource(final Resource.Type type) {
-            final String contentType = API.Match(type).of(
-                    API.Case(API.$(API.List(Resource.Type.VIDEO, Resource.Type.TRAILER)::contains), "video/mp4"),
-                    API.Case(API.$(), "image/jpg")
+            final String contentType = Match(type).of(
+                    Case($(List(Resource.Type.VIDEO, Resource.Type.TRAILER)::contains), "video/mp4"),
+                    Case($(), "image/jpg")
             );
 
             final byte[] content = "Conteudo".getBytes();
