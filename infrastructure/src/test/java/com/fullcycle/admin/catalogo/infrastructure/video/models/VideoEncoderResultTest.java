@@ -51,4 +51,30 @@ public class VideoEncoderResultTest {
                 .hasFieldOrPropertyWithValue("video", expectedMetadata);
     }
 
+    @Test
+    public void testMarshallSuccessResult() throws IOException {
+        // given
+        final var expectedId = IdUtils.uuid();
+        final var expectedOutputBucket = "codeeducationtest";
+        final var expectedStatus = "COMPLETED";
+        final var expectedEncoderVideoFolder = "anyfolder";
+        final var expectedResourceId = IdUtils.uuid();
+        final var expectedFilePath = "any.mp4";
+        final var expectedMetadata =
+                new VideoMetadata(expectedEncoderVideoFolder, expectedResourceId, expectedFilePath);
+
+        final var aResult = new VideoEncoderCompleted(expectedId, expectedOutputBucket, expectedMetadata);
+
+        // when
+        final var actualResult = this.json.write(aResult);
+
+        Assertions.assertThat(actualResult)
+                .hasJsonPathValue("$.id", expectedId)
+                .hasJsonPathValue("$.output_bucket_path", expectedOutputBucket)
+                .hasJsonPathValue("$.status", expectedStatus)
+                .hasJsonPathValue("$.video.encoded_video_folder", expectedEncoderVideoFolder)
+                .hasJsonPathValue("$.video.resource_id", expectedResourceId)
+                .hasJsonPathValue("$.video.file_path", expectedFilePath);
+    }
+
 }
