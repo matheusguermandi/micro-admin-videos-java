@@ -77,4 +77,55 @@ public class VideoEncoderResultTest {
                 .hasJsonPathValue("$.video.file_path", expectedFilePath);
     }
 
+    @Test
+    public void testUnmarshallErrorResult() throws IOException {
+        // given
+        final var expectedMessage = "Resource not found";
+        final var expectedStatus = "ERROR";
+        final var expectedResourceId = IdUtils.uuid();
+        final var expectedFilePath = "any.mp4";
+        final var expectedVideoMessage =
+                new VideoMessage(expectedResourceId, expectedFilePath);
+
+        final var json = """
+                    {
+                      "status": "%s",
+                      "error": "%s",
+                      "message": {
+                        "resource_id": "%s",
+                        "file_path": "%s"
+                      }
+                    }
+                """.formatted(expectedStatus, expectedMessage, expectedResourceId, expectedFilePath);
+
+        // when
+        final var actualResult = this.json.parse(json);
+
+        Assertions.assertThat(actualResult)
+                .isInstanceOf(VideoEncoderError.class)
+                .hasFieldOrPropertyWithValue("error", expectedMessage)
+                .hasFieldOrPropertyWithValue("message", expectedVideoMessage);
+    }
+
+    @Test
+    public void testMarshallErrorResult() throws IOException {
+        // given
+        final var expectedMessage = "Resource not found";
+        final var expectedStatus = "ERROR";
+        final var expectedResourceId = IdUtils.uuid();
+        final var expectedFilePath = "any.mp4";
+        final var expectedVideoMessage =
+                new VideoMessage(expectedResourceId, expectedFilePath);
+
+        final var aResult = new VideoEncoderError(expectedVideoMessage, expectedMessage);
+
+        // when
+        final var actualResult = this.json.write(aResult);
+
+        Assertions.assertThat(actualResult)
+                .hasJsonPathValue("$.status", expectedStatus)
+                .hasJsonPathValue("$.error", expectedMessage)
+                .hasJsonPathValue("$.message.resource_id", expectedResourceId)
+                .hasJsonPathValue("$.message.file_path", expectedFilePath);
+    }
 }
