@@ -35,6 +35,8 @@ docker-compose up -d
 
 4. Executar a aplicação como SpringBoot app:
 ```shell
+GOOGLE_CLOUD_CREDENTIALS=A \
+GOOGLE_CLOUD_PROJECT=A \
 ./gradlew bootRun
 ``` 
 
