@@ -1,5 +1,6 @@
 package com.fullcycle.admin.catalogo.e2e;
 
+import com.fullcycle.admin.catalogo.ApiTest;
 import com.fullcycle.admin.catalogo.domain.Identifier;
 import com.fullcycle.admin.catalogo.domain.castmember.CastMemberID;
 import com.fullcycle.admin.catalogo.domain.castmember.CastMemberType;
@@ -141,51 +142,85 @@ public interface MockDsl {
     }
 
     default <A, D> List<D> mapTo(final List<A> actual, final Function<A, D> mapper) {
-        return actual.stream().map(mapper).toList();
+        return actual.stream()
+                .map(mapper)
+                .toList();
     }
 
     private String given(final String url, final Object body) throws Exception {
-        final var aRequest = post(url).contentType(MediaType.APPLICATION_JSON).content(Json.writeValueAsString(body));
+        final var aRequest = post(url)
+                .with(ApiTest.ADMIN_JWT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(Json.writeValueAsString(body));
 
-        final var actualId = this.mvc().perform(aRequest).andExpect(status().isCreated()).andReturn().getResponse().getHeader("Location").replace("%s/".formatted(url), "");
+        final var actualId = this.mvc().perform(aRequest)
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse().getHeader("Location")
+                .replace("%s/".formatted(url), "");
 
         return actualId;
     }
 
     private ResultActions givenResult(final String url, final Object body) throws Exception {
-        final var aRequest = post(url).contentType(MediaType.APPLICATION_JSON).content(Json.writeValueAsString(body));
+        final var aRequest = post(url)
+                .with(ApiTest.ADMIN_JWT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(Json.writeValueAsString(body));
 
         return this.mvc().perform(aRequest);
     }
 
     private ResultActions list(final String url, final int page, final int perPage, final String search, final String sort, final String direction) throws Exception {
-        final var aRequest = get(url).queryParam("page", String.valueOf(page)).queryParam("perPage", String.valueOf(perPage)).queryParam("search", search).queryParam("sort", sort).queryParam("dir", direction).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON);
+        final var aRequest = get(url)
+                .with(ApiTest.ADMIN_JWT)
+                .queryParam("page", String.valueOf(page))
+                .queryParam("perPage", String.valueOf(perPage))
+                .queryParam("search", search)
+                .queryParam("sort", sort)
+                .queryParam("dir", direction)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
 
         return this.mvc().perform(aRequest);
     }
 
     private <T> T retrieve(final String url, final Identifier anId, final Class<T> clazz) throws Exception {
-        final var aRequest = get(url + anId.getValue()).accept(MediaType.APPLICATION_JSON_UTF8).contentType(MediaType.APPLICATION_JSON_UTF8);
+        final var aRequest = get(url + anId.getValue())
+                .with(ApiTest.ADMIN_JWT)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8);
 
-        final var json = this.mvc().perform(aRequest).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        final var json = this.mvc().perform(aRequest)
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse().getContentAsString();
 
         return Json.readValue(json, clazz);
     }
 
     private ResultActions retrieveResult(final String url, final Identifier anId) throws Exception {
-        final var aRequest = get(url + anId.getValue()).accept(MediaType.APPLICATION_JSON_UTF8).contentType(MediaType.APPLICATION_JSON_UTF8);
+        final var aRequest = get(url + anId.getValue())
+                .with(ApiTest.ADMIN_JWT)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8);
 
         return this.mvc().perform(aRequest);
     }
 
     private ResultActions delete(final String url, final Identifier anId) throws Exception {
-        final var aRequest = MockMvcRequestBuilders.delete(url + anId.getValue()).contentType(MediaType.APPLICATION_JSON);
+        final var aRequest = MockMvcRequestBuilders.delete(url + anId.getValue())
+                .with(ApiTest.ADMIN_JWT)
+                .contentType(MediaType.APPLICATION_JSON);
 
         return this.mvc().perform(aRequest);
     }
 
     private ResultActions update(final String url, final Identifier anId, final Object aRequestBody) throws Exception {
-        final var aRequest = put(url + anId.getValue()).contentType(MediaType.APPLICATION_JSON).content(Json.writeValueAsString(aRequestBody));
+        final var aRequest = put(url + anId.getValue())
+                .with(ApiTest.ADMIN_JWT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(Json.writeValueAsString(aRequestBody));
 
         return this.mvc().perform(aRequest);
     }
