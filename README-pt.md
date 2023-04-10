@@ -10,6 +10,8 @@
 </center>
 <br />
 
+
+
 ## Tools required
 
 -JDK 17
@@ -162,3 +164,6 @@ To close the containers, just run the command:
 ```
 docker compose --stop profiling app
 ```
+
+## README.md PT-BR
+- [README.md PT-BR](README-pt.md)
