@@ -165,6 +165,68 @@ To close the containers, just run the command:
 docker compose --stop profiling app
 ```
 
+### Keycloak
+
+#### Setup
+1. Add Keycloak container inside docker-compose
+    ```
+      keycloak:
+        container_name: adm_videos_keycloak
+        image: quay.io/keycloak/keycloak:20.0.3
+        environment:
+          - KEYCLOAK_ADMIN=admin
+          - KEYCLOAK_ADMIN_PASSWORD=admin
+        ports:
+          - 8443:8080
+        command:
+          - start-dev
+    ```
+2. Upload the container and navigate to `http://localhost:8443/`
+3. Create a new realm for the project: `fc3-codeflix`
+4. Navigate to Realm settings > General > Endpoints
+     - These endpoints are important for integration
+5. Navigate to Realm settings > Keys
+     - We will use the public key of the RS256 algorithm to verify the token
+6. Create the client:
+     - Client Id: fc3-admin-catalogo-de-videos
+     - Client authentication: ON -- this makes access confidential
+     - Redirect URL: confidential
+     - Comment on the `client and secret` credentials that we will use for manual login
+7. Create the role:
+     - Role: catalogo-admin
+     - Description: Role that gives admin permission to users
+8. Create a group:
+     - Name: catalogo-admin
+     - Role mapping: assign `catalogo-admin`
+9. Create a user:
+     - Name: myuser
+     - Groups: add to `catalogo-admin`
+     - Create a credentials: `123456`
+     
+
+#### Integration
+1. Add spring boot starter:
+   ```
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+
+    testImplementation('org.springframework.security:spring-security-test')
+   ```
+2. Config Properties:
+   ```properties
+       keycloak:
+           realm: fc3-codeflix
+           host: http://localhost:8443
+      
+       spring:
+           security:
+               oauth2:
+                   resourceserver:
+                       jwt:
+                           jwk-set-uri: ${keycloak.host}/realms/${keycloak.realm}/protocol/openid-connect/certs
+                           issuer-uri: ${keycloak.host}/realms/${keycloak.realm}
+   ```
+
 ## README.md PT-BR
 - [README.md PT-BR](README-pt.md)
 
