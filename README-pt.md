@@ -1,169 +1,223 @@
 <center>
-    <p align="center">
-      <img src="https://icon-library.com/images/java-icon-png/java-icon-png-15.jpg" width="150" />
-    </p>
-    <h1 align="center">🚀 Microservice: Video Catalog Admin with Java</h1>
-    <p align="center">
-      Microservice referring to the Video Catalog Management backend<br />
-      Using Clean Architecture, DDD, TDD and current market best practices
-    </p>
+  <p align="center">
+    <img src="https://icon-library.com/images/java-icon-png/java-icon-png-15.jpg"  width="150" />
+  </p>  
+  <h1 align="center">🚀 Microserviço: Admin do Catálogo de Vídeos com Java</h1>
+  <p align="center">
+    Microserviço referente ao backend da Administração do Catálogo de Vídeos<br />
+    Utilizando Clean Architecture, DDD, TDD e as boas práticas atuais de mercado
+  </p>
 </center>
 <br />
 
+## Ferramentas necessárias
 
-
-## Tools required
-
--JDK 17
-- IDE of your choice
+- JDK 17
+- IDE de sua preferência
 - Docker
 
-## How to run?
+## Como executar?
 
-1. Clone the repository:
+1. Clonar o repositório:
 ```sh
 git clone https://github.com/codeedu/micro-admin-videos-java.git
 ```
 
-2. Upload the MySQL database with Docker:
-``` shell
+2. Subir o banco de dados MySQL com Docker:
+```shell
 docker-compose up -d
 ```
 
-3. Perform MySQL migrations with Flyway:
-``` shell
+3. Executar as migrações do MySQL com o Flyway:
+```shell
 ./gradlew flywayMigrate
 ```
 
-4. Run the application as a SpringBoot app:
-``` shell
+4. Executar a aplicação como SpringBoot app:
+```shell
 GOOGLE_CLOUD_CREDENTIALS=A \
 GOOGLE_CLOUD_PROJECT=A \
 ./gradlew bootRun
-```
+``` 
 
-> It is also possible to run as a Java application through the
-> main() method in Main.java class
-## Database
-The main database is a MySQL and to upload it locally we will use
-Docker. Run the following command to bring up MySQL:
+> Também é possível executar como uma aplicação Java através do
+> método main() na classe Main.java
+## Banco de dados
+O banco de dados principal é um MySQL e para subir localmente vamos utilizar o
+Docker. Execute o comando a seguir para subir o MySQL:
 
-``` shell
+```shell
 docker-compose up -d
 ```
 
-Ready! Wait that in a moment MySQL will be ready to be consumed
-on port 3306.
+Pronto! Aguarde que em instantes o MySQL irá estar pronto para ser consumido
+na porta 3306.
 
-### Database Migrations with Flyway
+### Migrações do banco de dados com Flyway
 
-#### Run the migrations
+#### Executar as migrações
 
-If it is the first time you are uploading the database, it is necessary
-running the SQL migrations with the `flyway` tool.
-Run the following command to run the migrations:
+Caso seja a primeira vez que esteja subindo o banco de dados, é necessário
+executar as migrações SQL com a ferramenta `flyway`.
+Execute o comando a seguir para executar as migrações:
 
-``` shell
+```shell
 ./gradlew flywayMigrate
 ```
 
-Ready! Now the MySQL database is ready to be used.
+Pronto! Agora sim o banco de dados MySQL está pronto para ser utilizado.
 
 <br/>
 
-#### Clear database migrations
+#### Limpar as migrações do banco
 
-It is possible to clean (delete all tables) your database, just
-run the following command:
+É possível limpar (deletar todas as tabelas) seu banco de dados, basta
+executar o seguinte comando:
 
 ```shell
-./gradlew flywayClear
+./gradlew flywayClean
 ```
 
-BUT remember: "With great power comes great responsibility".
+MAS lembre-se: "Grandes poderes, vem grandes responsabilidades".
 
 <br/>
 
-#### Repairing database migrations
+#### Reparando as migrações do banco
 
-There are two ways to generate an inconsistency in the Flyway leaving it in the transformed state:
+Existe duas maneiras de gerar uma inconsistência no Flyway deixando ele no estado de reparação:
 
-1. Some migration SQL file with error;
-2. Some already applied migration file has been changed (by modifying the `checksum`).
+1. Algum arquivo SQL de migração com erro;
+2. Algum arquivo de migração já aplicado foi alterado (modificando o `checksum`).
 
-When this happens, the flyway will be in a controlled state.
-with a record in the `flyway_schema_history` table in error (`success = 0`).
+Quando isso acontecer o flyway ficará em um estado de reparação
+com um registro na tabela `flyway_schema_history` com erro (`sucesso = 0`).
 
-To run the build, fix the files and run:
-``` shell
+Para executar a reparação, corrija os arquivos e execute:
+```shell
 ./gradlew flywayRepair
 ```
 
-With the above command, Flyway will clean the records with error from the `flyway_schema_history` table,
-then execute the FlywayMigrate command to try to migrate them again.
+Com o comando acima o Flyway limpará os registros com erro da tabela `flyway_schema_history`,
+na sequência execute o comando FlywayMigrate para tentar migrar-los novamente.
 
 <br/>
 
-#### Other useful Flyway commands
+#### Outros comandos úteis do Flyway
 
-In addition to the commands already shown, we have some other very useful ones such as info and validate:
+Além dos comandos já exibidos, temos alguns outros muito úteis como o info e o validate:
 
-``` shell
+```shell
 ./gradlew flywayInfo
 ./gradlew flywayValidate
 ```
 
-To know all available commands: [Flyway Gradle Plugin](https://flywaydb.org/documentation/usage/gradle/info)
+Para saber todos os comandos disponíveis: [Flyway Gradle Plugin](https://flywaydb.org/documentation/usage/gradle/info)
 
 <br/>
 
-#### To run the commands in another environment
+#### Para executar os comandos em outro ambiente
 
-There in `build.gradle` we configure Flyway to first read the variables from
-environment `FLYWAY_DB`, `FLYWAY_USER` and `FLYWAY_PASS` and then use a default value
-if you can't find it. With that, to point to another environment just overwrite
-these variables when executing the commands, for example:
+Lá no `build.gradle` configuramos o Flyway para lêr primeiro as variáveis de
+ambiente `FLYWAY_DB`, `FLYWAY_USER` e `FLYWAY_PASS` e depois usar um valor padrão
+caso não as encontre. Com isso, para apontar para outro ambiente basta sobrescrever
+essas variáveis na hora de executar os comandos, exemplo:
 
-``` shell
+```shell
 FLYWAY_DB=jdbc:mysql://prod:3306/adm_videos FLYWAY_USER=root FLYWAY_PASS=123h1hu ./gradlew flywayValidate
 ```
 
-### Running with Docker
-To run the application locally with Docker, we will use `docker compose` and it only takes three steps:
+### Executando com Docker
+Para rodar a aplicação localmente com Docker, iremos utilizar o `docker compose` e necessita de apenas três passos:
 <br/>
 
-#### 1. Generating the productive extractor (jar)
+#### 1. Gerando o artefato produtivo (jar)
 
-To generate the productive output, just run the command:
+Para gerar o artefato produtivo, basta executar o comando:
 ```
 ./gradlew bootJar
 ```
 <br/>
 
-#### 2. Running the independent containers
+#### 2. Executando os containers independentes
 
-To run MySQL and Rabbit, just run the command below.
+Para executar o MySQL e o Rabbit, basta executar o comando abaixo.
 ```
 docker-compose up -d
 ```
 <br/>
 
-#### 3. Running the application along with other containers
+#### 3. Executando a aplicação junto dos outros containers
 
-After seeing that the other containers are up, to run your application together, just run the command:
+Depois de visualizar que os demais containers estão de pé, para rodar sua aplicação junto basta executar o comando:
 ```
 docker-compose --profile app up -d
 ```
 
-> **Note:** If you need to rebuild the image of your application, an additional command is required:
+> **Obs.:** Caso necessite rebuildar a imagem de sua aplicação é necessário um comando adicional:
 >```
-> docker compose build --no-cache app
+>docker compose build --no-cache app
 >```
-#### Stopping containers
-To close the containers, just run the command:
+#### Parando os containers
+Para encerrar os containers, basta executar o comando:
 ```
-docker compose --stop profiling app
+docker compose --profile app stop
 ```
 
-## README.md PT-BR
-- [README.md PT-BR](README-pt.md)
+### Keycloak
+#### Setup
+1. Adicionar no docker-compose o container do Keycloak
+    ```
+      keycloak:
+        container_name: adm_videos_keycloak
+        image: quay.io/keycloak/keycloak:20.0.3
+        environment:
+          - KEYCLOAK_ADMIN=admin
+          - KEYCLOAK_ADMIN_PASSWORD=admin
+        ports:
+          - 8443:8080
+        command:
+          - start-dev
+    ```
+2. Subir o container e navegar ate `http://localhost:8443/`
+3. Criar um realm novo para o projeto: `fc3-codeflix`
+4. Navegar ate Realm settings > General > Endpoints
+    - Esses endpoints são importantes para fazer-mos a integração
+5. Navegar ate Realm settings > Keys
+    - Iremos utilizar a chave publica do algoritmo RS256 para verificar o token
+6. Criar o client:
+    - Client Id: fc3-admin-catalogo-de-videos
+    - Client authentication: ON -- isso faz acesso confidential
+    - Redirect URL: confidential
+    - Comentar das credentials `client and secret` que usaremos para login manual
+7. Criar a role:
+    - Role: catalogo-admin
+    - Description: Role que dá permissão de admin para os usuários
+8. Criar um group:
+    - Name: catalogo-admin
+    - Role mapping: assign `catalogo-admin`
+9. Criar um usuario:
+    - Nome: myuser
+    - Groups: adicionar ao `catalogo-admin`
+    - Criar um credentials: `123456`
+#### Integration
+1. Adicionar o starter do spring boot:
+   ```
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+
+    testImplementation('org.springframework.security:spring-security-test')
+   ```
+2. Configuração das properties:
+   ```properties
+       keycloak:
+           realm: fc3-codeflix
+           host: http://localhost:8443
+      
+       spring:
+           security:
+               oauth2:
+                   resourceserver:
+                       jwt:
+                           jwk-set-uri: ${keycloak.host}/realms/${keycloak.realm}/protocol/openid-connect/certs
+                           issuer-uri: ${keycloak.host}/realms/${keycloak.realm}
+   ```

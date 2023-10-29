@@ -1,165 +1,170 @@
 <center>
-  <p align="center">
-    <img src="https://icon-library.com/images/java-icon-png/java-icon-png-15.jpg"  width="150" />
-  </p>  
-  <h1 align="center">🚀 Microserviço: Admin do Catálogo de Vídeos com Java</h1>
-  <p align="center">
-    Microserviço referente ao backend da Administração do Catálogo de Vídeos<br />
-    Utilizando Clean Architecture, DDD, TDD e as boas práticas atuais de mercado
-  </p>
+    <p align="center">
+      <img src="https://icon-library.com/images/java-icon-png/java-icon-png-15.jpg" width="150" />
+    </p>
+    <h1 align="center">🚀 Microservice: Video Catalog Admin with Java</h1>
+    <p align="center">
+      Microservice referring to the Video Catalog Management backend<br />
+      Using Clean Architecture, DDD, TDD and current market best practices
+    </p>
 </center>
 <br />
 
-## Ferramentas necessárias
 
-- JDK 17
-- IDE de sua preferência
+
+## Tools required
+
+-JDK 17
+- IDE of your choice
 - Docker
 
-## Como executar?
+## How to run?
 
-1. Clonar o repositório:
+1. Clone the repository:
 ```sh
 git clone https://github.com/codeedu/micro-admin-videos-java.git
 ```
 
-2. Subir o banco de dados MySQL com Docker:
-```shell
+2. Upload the MySQL database with Docker:
+``` shell
 docker-compose up -d
 ```
 
-3. Executar as migrações do MySQL com o Flyway:
-```shell
+3. Perform MySQL migrations with Flyway:
+``` shell
 ./gradlew flywayMigrate
 ```
 
-4. Executar a aplicação como SpringBoot app:
-```shell
+4. Run the application as a SpringBoot app:
+``` shell
 GOOGLE_CLOUD_CREDENTIALS=A \
 GOOGLE_CLOUD_PROJECT=A \
 ./gradlew bootRun
-``` 
+```
 
-> Também é possível executar como uma aplicação Java através do
-> método main() na classe Main.java
-## Banco de dados
-O banco de dados principal é um MySQL e para subir localmente vamos utilizar o
-Docker. Execute o comando a seguir para subir o MySQL:
+> It is also possible to run as a Java application through the
+> main() method in Main.java class
+## Database
+The main database is a MySQL and to upload it locally we will use
+Docker. Run the following command to bring up MySQL:
 
-```shell
+``` shell
 docker-compose up -d
 ```
 
-Pronto! Aguarde que em instantes o MySQL irá estar pronto para ser consumido
-na porta 3306.
+Ready! Wait that in a moment MySQL will be ready to be consumed
+on port 3306.
 
-### Migrações do banco de dados com Flyway
+### Database Migrations with Flyway
 
-#### Executar as migrações
+#### Run the migrations
 
-Caso seja a primeira vez que esteja subindo o banco de dados, é necessário
-executar as migrações SQL com a ferramenta `flyway`.
-Execute o comando a seguir para executar as migrações:
+If it is the first time you are uploading the database, it is necessary
+running the SQL migrations with the `flyway` tool.
+Run the following command to run the migrations:
 
-```shell
+``` shell
 ./gradlew flywayMigrate
 ```
 
-Pronto! Agora sim o banco de dados MySQL está pronto para ser utilizado.
+Ready! Now the MySQL database is ready to be used.
 
 <br/>
 
-#### Limpar as migrações do banco
+#### Clear database migrations
 
-É possível limpar (deletar todas as tabelas) seu banco de dados, basta
-executar o seguinte comando:
+It is possible to clean (delete all tables) your database, just
+run the following command:
 
 ```shell
-./gradlew flywayClean
+./gradlew flywayClear
 ```
 
-MAS lembre-se: "Grandes poderes, vem grandes responsabilidades".
+BUT remember: "With great power comes great responsibility".
 
 <br/>
 
-#### Reparando as migrações do banco
+#### Repairing database migrations
 
-Existe duas maneiras de gerar uma inconsistência no Flyway deixando ele no estado de reparação:
+There are two ways to generate an inconsistency in the Flyway leaving it in the transformed state:
 
-1. Algum arquivo SQL de migração com erro;
-2. Algum arquivo de migração já aplicado foi alterado (modificando o `checksum`).
+1. Some migration SQL file with error;
+2. Some already applied migration file has been changed (by modifying the `checksum`).
 
-Quando isso acontecer o flyway ficará em um estado de reparação
-com um registro na tabela `flyway_schema_history` com erro (`sucesso = 0`).
+When this happens, the flyway will be in a controlled state.
+with a record in the `flyway_schema_history` table in error (`success = 0`).
 
-Para executar a reparação, corrija os arquivos e execute:
-```shell
+To run the build, fix the files and run:
+``` shell
 ./gradlew flywayRepair
 ```
 
-Com o comando acima o Flyway limpará os registros com erro da tabela `flyway_schema_history`,
-na sequência execute o comando FlywayMigrate para tentar migrar-los novamente.
+With the above command, Flyway will clean the records with error from the `flyway_schema_history` table,
+then execute the FlywayMigrate command to try to migrate them again.
 
 <br/>
 
-#### Outros comandos úteis do Flyway
+#### Other useful Flyway commands
 
-Além dos comandos já exibidos, temos alguns outros muito úteis como o info e o validate:
+In addition to the commands already shown, we have some other very useful ones such as info and validate:
 
-```shell
+``` shell
 ./gradlew flywayInfo
 ./gradlew flywayValidate
 ```
 
-Para saber todos os comandos disponíveis: [Flyway Gradle Plugin](https://flywaydb.org/documentation/usage/gradle/info)
+To know all available commands: [Flyway Gradle Plugin](https://flywaydb.org/documentation/usage/gradle/info)
 
 <br/>
 
-#### Para executar os comandos em outro ambiente
+#### To run the commands in another environment
 
-Lá no `build.gradle` configuramos o Flyway para lêr primeiro as variáveis de
-ambiente `FLYWAY_DB`, `FLYWAY_USER` e `FLYWAY_PASS` e depois usar um valor padrão
-caso não as encontre. Com isso, para apontar para outro ambiente basta sobrescrever
-essas variáveis na hora de executar os comandos, exemplo:
+There in `build.gradle` we configure Flyway to first read the variables from
+environment `FLYWAY_DB`, `FLYWAY_USER` and `FLYWAY_PASS` and then use a default value
+if you can't find it. With that, to point to another environment just overwrite
+these variables when executing the commands, for example:
 
-```shell
+``` shell
 FLYWAY_DB=jdbc:mysql://prod:3306/adm_videos FLYWAY_USER=root FLYWAY_PASS=123h1hu ./gradlew flywayValidate
 ```
 
-### Executando com Docker
-Para rodar a aplicação localmente com Docker, iremos utilizar o `docker compose` e necessita de apenas três passos:
+### Running with Docker
+To run the application locally with Docker, we will use `docker compose` and it only takes three steps:
 <br/>
 
-#### 1. Gerando o artefato produtivo (jar)
+#### 1. Generating the productive extractor (jar)
 
-Para gerar o artefato produtivo, basta executar o comando:
+To generate the productive output, just run the command:
 ```
 ./gradlew bootJar
 ```
 <br/>
 
-#### 2. Executando os containers independentes
+#### 2. Running the independent containers
 
-Para executar o MySQL e o Rabbit, basta executar o comando abaixo.
+To run MySQL and Rabbit, just run the command below.
 ```
 docker-compose up -d
 ```
 <br/>
 
-#### 3. Executando a aplicação junto dos outros containers
+#### 3. Running the application along with other containers
 
-Depois de visualizar que os demais containers estão de pé, para rodar sua aplicação junto basta executar o comando:
+After seeing that the other containers are up, to run your application together, just run the command:
 ```
 docker-compose --profile app up -d
 ```
 
-> **Obs.:** Caso necessite rebuildar a imagem de sua aplicação é necessário um comando adicional:
+> **Note:** If you need to rebuild the image of your application, an additional command is required:
 >```
->docker compose build --no-cache app
+> docker compose build --no-cache app
 >```
-#### Parando os containers
-Para encerrar os containers, basta executar o comando:
+#### Stopping containers
+To close the containers, just run the command:
 ```
-docker compose --profile app stop
+docker compose --stop profiling app
 ```
+
+## README.md PT-BR
+- [README.md PT-BR](README-pt.md)
 
